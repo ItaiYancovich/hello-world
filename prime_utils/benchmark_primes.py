@@ -3,7 +3,7 @@
 import argparse
 import time
 
-import prime
+from . import prime
 
 
 def main(limit: int, method: str):

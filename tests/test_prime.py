@@ -3,7 +3,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-import prime
+import prime_utils as prime
 
 
 def test_is_prime_basic():

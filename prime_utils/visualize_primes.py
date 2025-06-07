@@ -3,7 +3,7 @@
 import argparse
 import matplotlib.pyplot as plt
 
-import prime
+from . import prime
 
 
 def main(limit: int, output: str | None = None):

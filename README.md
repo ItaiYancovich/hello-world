@@ -4,32 +4,33 @@ This repository contains simple examples in Python.
 
 ## Prime utilities
 
-- `prime.py` implements prime-number generation and related helpers such as
-  prime factorization and counting functions.
-- `prime_cli.py` exposes these utilities on the command line.
-- `visualize_primes.py` shows how to plot primes using matplotlib and can
-  optionally save the result to an image file.
-- `benchmark_primes.py` provides a simple timing comparison of prime
-  generation methods.
+The code is packaged under `prime_utils` and provides helpers for prime-number
+operations. Optional plotting features depend on ``matplotlib``.
 
-Run the visualization with:
+Install the project in editable mode:
 
 ```bash
-python visualize_primes.py 100
+pip install -e .[plot]
 ```
 
 ### Command-line usage
 
-Check if a number is prime:
+After installation a ``prime`` command is available. Check if a number is prime:
 
 ```bash
-python prime_cli.py is-prime 17
+prime is-prime 17
 ```
 
 List primes up to a limit and save to CSV:
 
 ```bash
-python prime_cli.py list 100 --csv primes.csv
+prime list 100 --csv primes.csv
+```
+
+Visualize primes with matplotlib:
+
+```bash
+python -m prime_utils.visualize_primes 100
 ```
 
 ### Running tests

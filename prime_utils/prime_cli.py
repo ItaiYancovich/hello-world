@@ -1,7 +1,7 @@
 import argparse
 import csv
 
-import prime
+from . import prime
 
 
 def cmd_is_prime(args):
