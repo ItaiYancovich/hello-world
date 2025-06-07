@@ -38,6 +38,10 @@ def cmd_count(args):
     print(prime.prime_pi(args.limit))
 
 
+def cmd_nth(args):
+    print(prime.nth_prime(args.n))
+
+
 def build_parser():
     parser = argparse.ArgumentParser(description="Prime utility CLI")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -64,6 +68,10 @@ def build_parser():
     p_count = subparsers.add_parser("count", help="Count primes up to a limit")
     p_count.add_argument("limit", type=int)
     p_count.set_defaults(func=cmd_count)
+
+    p_nth = subparsers.add_parser("nth", help="Show the n-th prime")
+    p_nth.add_argument("n", type=int)
+    p_nth.set_defaults(func=cmd_nth)
 
     return parser
 
