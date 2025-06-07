@@ -45,3 +45,7 @@ Install `pytest` and run:
 ```bash
 pytest -q
 ```
+
+## Web front-end
+
+A small interactive web UI is available under `webapp/`. Open `webapp/index.html` in a browser to explore prime utilities. It can check primality, factor numbers, visualize prime distributions with a scatter chart, and find the n-th prime.
