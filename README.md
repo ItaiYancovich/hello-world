@@ -32,6 +32,12 @@ List primes up to a limit and save to CSV:
 python prime_cli.py list 100 --csv primes.csv
 ```
 
+Find the n-th prime number:
+
+```bash
+python prime_cli.py nth 10
+```
+
 ### Running tests
 
 Install `pytest` and run:

@@ -32,3 +32,9 @@ def test_prime_factors():
 
 def test_sieve_primes():
     assert prime.sieve_primes(10) == [2, 3, 5, 7]
+
+
+def test_nth_prime():
+    assert prime.nth_prime(1) == 2
+    assert prime.nth_prime(5) == 11
+    assert prime.nth_prime(100) == 541

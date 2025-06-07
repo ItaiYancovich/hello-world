@@ -66,3 +66,21 @@ def sieve_primes(limit: int):
             start = num * num
             sieve[start:limit + 1:step] = [False] * len(range(start, limit + 1, step))
     return [i for i, prime in enumerate(sieve) if prime]
+
+
+def nth_prime(n: int) -> int:
+    """Return the ``n``-th prime number (1-indexed)."""
+    if n < 1:
+        raise ValueError("n must be >= 1")
+
+    # Estimate an upper bound for the n-th prime using the prime number theorem
+    if n < 6:
+        limit = 15
+    else:
+        limit = int(n * (math.log(n) + math.log(math.log(n)))) + 3
+
+    primes = sieve_primes(limit)
+    while len(primes) < n:
+        limit *= 2
+        primes = sieve_primes(limit)
+    return primes[n - 1]
