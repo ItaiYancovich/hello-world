@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prime Explorer</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Prime Explorer</h1>
+    <div class="section">
+        <h2>Prime Check</h2>
+        <input id="prime-input" type="number" placeholder="Enter number">
+        <button onclick="checkPrime()">Check</button>
+        <p id="prime-result"></p>
+    </div>
+
+    <div class="section">
+        <h2>Prime Factors</h2>
+        <input id="factor-input" type="number" placeholder="Enter number">
+        <button onclick="showFactors()">Factorize</button>
+        <p id="factor-result"></p>
+    </div>
+
+    <div class="section">
+        <h2>Prime List & Chart</h2>
+        <input id="list-limit" type="number" placeholder="Limit">
+        <button onclick="listPrimes()">List</button>
+        <p id="list-result"></p>
+        <canvas id="prime-chart" width="600" height="400"></canvas>
+    </div>
+
+    <div class="section">
+        <h2>Nth Prime</h2>
+        <input id="nth-input" type="number" placeholder="n">
+        <button onclick="showNthPrime()">Find</button>
+        <p id="nth-result"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
