@@ -83,3 +83,42 @@ function showNthPrime() {
     const prime = nthPrime(n);
     document.getElementById('nth-result').innerText = `${n}-th prime is ${prime}`;
 }
+
+// --- Animated Prime Spiral ---
+// Draw primes in a spiral pattern reminiscent of 3Blue1Brown-style visuals.
+function primeSpiralAnimation(limit = 1000) {
+    const canvas = document.getElementById('prime-animation');
+    if (!canvas || !canvas.getContext) return;
+    const ctx = canvas.getContext('2d');
+
+    const primes = generatePrimes(limit);
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const scale = 4; // distance between successive spiral arms
+
+    ctx.fillStyle = '#111';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    let idx = 0;
+    function drawNext() {
+        if (idx >= primes.length) return;
+        const p = primes[idx];
+        const r = Math.sqrt(p) * scale;
+        const angle = p * 0.15;
+        const x = centerX + r * Math.cos(angle);
+        const y = centerY + r * Math.sin(angle);
+
+        ctx.fillStyle = '#f0b90b';
+        ctx.beginPath();
+        ctx.arc(x, y, 3, 0, 2 * Math.PI);
+        ctx.fill();
+
+        idx += 1;
+        requestAnimationFrame(drawNext);
+    }
+    drawNext();
+}
+
+window.onload = function() {
+    primeSpiralAnimation();
+};

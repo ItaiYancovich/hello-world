@@ -8,6 +8,13 @@ body {
 h1 {
     text-align: center;
 }
+
+#prime-animation {
+    display: block;
+    margin: 20px auto;
+    background: #111;
+    border-radius: 8px;
+}
 .section {
     background: white;
     padding: 15px;
