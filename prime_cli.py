@@ -9,7 +9,12 @@ def cmd_is_prime(args):
 
 
 def cmd_list(args):
-    primes = list(prime.generate_primes(args.limit))
+    if args.method == "sieve":
+        primes = prime.sieve_primes(args.limit)
+    elif args.method == "segmented":
+        primes = prime.segmented_sieve(args.limit)
+    else:
+        primes = list(prime.generate_primes(args.limit))
     if args.csv:
         with open(args.csv, 'w', newline='') as f:
             writer = csv.writer(f)
@@ -20,7 +25,12 @@ def cmd_list(args):
 
 
 def cmd_range(args):
-    primes = list(prime.primes_in_range(args.start, args.end))
+    if args.method == "sieve":
+        primes = [p for p in prime.sieve_primes(args.end) if p >= args.start]
+    elif args.method == "segmented":
+        primes = [p for p in prime.segmented_sieve(args.end) if p >= args.start]
+    else:
+        primes = list(prime.primes_in_range(args.start, args.end))
     if args.csv:
         with open(args.csv, 'w', newline='') as f:
             writer = csv.writer(f)
@@ -49,12 +59,24 @@ def build_parser():
     p_list = subparsers.add_parser("list", help="List primes up to a limit")
     p_list.add_argument("limit", type=int)
     p_list.add_argument("--csv", type=str, help="Output CSV file path")
+    p_list.add_argument(
+        "--method",
+        choices=["trial", "sieve", "segmented"],
+        default="trial",
+        help="Generation method",
+    )
     p_list.set_defaults(func=cmd_list)
 
     p_range = subparsers.add_parser("range", help="List primes in a range")
     p_range.add_argument("start", type=int)
     p_range.add_argument("end", type=int)
     p_range.add_argument("--csv", type=str, help="Output CSV file path")
+    p_range.add_argument(
+        "--method",
+        choices=["trial", "sieve", "segmented"],
+        default="trial",
+        help="Generation method",
+    )
     p_range.set_defaults(func=cmd_range)
 
     p_factors = subparsers.add_parser("factors", help="Prime factors of a number")

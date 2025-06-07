@@ -66,3 +66,31 @@ def sieve_primes(limit: int):
             start = num * num
             sieve[start:limit + 1:step] = [False] * len(range(start, limit + 1, step))
     return [i for i, prime in enumerate(sieve) if prime]
+
+
+def segmented_sieve(limit: int, segment_size: int = 100000):
+    """Generate primes up to ``limit`` using a segmented sieve."""
+    if limit < 2:
+        return []
+
+    sqrt_limit = int(math.sqrt(limit))
+    base_primes = sieve_primes(sqrt_limit)
+    primes = base_primes.copy()
+
+    low = sqrt_limit + 1
+    high = low + segment_size - 1
+    while low <= limit:
+        if high > limit:
+            high = limit
+        mark = [True] * (high - low + 1)
+        for p in base_primes:
+            start = max(p * p, ((low + p - 1) // p) * p)
+            for j in range(start, high + 1, p):
+                mark[j - low] = False
+        for i in range(low, high + 1):
+            if mark[i - low]:
+                primes.append(i)
+        low = high + 1
+        high = low + segment_size - 1
+
+    return primes

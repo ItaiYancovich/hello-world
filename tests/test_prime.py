@@ -32,3 +32,7 @@ def test_prime_factors():
 
 def test_sieve_primes():
     assert prime.sieve_primes(10) == [2, 3, 5, 7]
+
+
+def test_segmented_sieve_matches_sieve():
+    assert prime.segmented_sieve(1000) == prime.sieve_primes(1000)
