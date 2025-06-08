@@ -143,6 +143,7 @@ function cellsRemainingAfterMove(r, c) {
 }
 
 // ---------- Improved computer opponent ----------
+// cache evaluation of board states { key: { win: boolean, dist: number } }
 const memo = {};
 
 function boardState() {
@@ -159,26 +160,43 @@ function boardState() {
 
 function canonical(state) { return state.join(','); }
 
-function isWinning(state) {
+// evaluate state: returns { win: bool, dist: moves to game end assuming optimal play }
+function evaluate(state) {
     const key = canonical(state);
     if (memo.hasOwnProperty(key)) return memo[key];
-    if (state[0] === 0) return memo[key] = false; // poison already taken
+    if (state[0] === 0) return (memo[key] = { win: false, dist: 0 });
+
+    let bestWin = Infinity;
+    let bestLoss = 0;
+    let hasWin = false;
 
     for (let r = 0; r < rows; r++) {
         for (let c = 0; c < state[r]; c++) {
-            if (r === 0 && c === 0) continue; // losing move
+            if (r === 0 && c === 0) continue; // taking poison
             const next = state.slice();
             for (let i = r; i < rows; i++) {
                 next[i] = Math.min(next[i], c);
             }
-            if (!isWinning(next)) return memo[key] = true;
+            const result = evaluate(next);
+            const dist = result.dist + 1;
+            if (!result.win) {
+                hasWin = true;
+                if (dist < bestWin) bestWin = dist;
+            } else if (dist > bestLoss) {
+                bestLoss = dist;
+            }
         }
     }
-    return memo[key] = false;
+
+    if (hasWin) return (memo[key] = { win: true, dist: bestWin });
+    return (memo[key] = { win: false, dist: bestLoss });
 }
 
-function findWinningMove() {
+function bestMove() {
     const state = boardState();
+    let bestWin = { dist: Infinity, move: null };
+    let bestLoss = { dist: -1, move: null };
+
     for (let r = 0; r < rows; r++) {
         for (let c = 0; c < state[r]; c++) {
             if (r === 0 && c === 0) continue;
@@ -186,38 +204,29 @@ function findWinningMove() {
             for (let i = r; i < rows; i++) {
                 next[i] = Math.min(next[i], c);
             }
-            if (!isWinning(next)) return { r, c };
+            const result = evaluate(next);
+            const dist = result.dist + 1;
+            if (!result.win) {
+                if (dist < bestWin.dist) {
+                    bestWin = { dist, move: { r, c } };
+                }
+            } else if (dist > bestLoss.dist) {
+                bestLoss = { dist, move: { r, c } };
+            }
         }
     }
-    return null;
+
+    return bestWin.move || bestLoss.move;
 }
 
 function computerMove() {
-    // try to find a mathematically winning move first
-    const best = findWinningMove();
-    if (best) {
-        makeMove(best.r, best.c);
-        return;
-    }
-
-    // fallback: simple heuristic to stay competitive
-    const moves = [];
-    const total = board.flat().filter(Boolean).length;
-    for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-            if (!board[r][c]) continue;
-            if (r === 0 && c === 0 && total > 1) continue; // avoid losing
-            moves.push({ r, c, remain: cellsRemainingAfterMove(r, c) });
-        }
-    }
-    if (moves.length === 0) {
+    const move = bestMove();
+    if (move) {
+        makeMove(move.r, move.c);
+    } else {
+        // no valid move? take poison to end the game
         makeMove(0, 0);
-        return;
     }
-    moves.sort((a, b) => a.remain - b.remain);
-    const top = moves.filter(m => m.remain === moves[0].remain);
-    const choice = top[Math.floor(Math.random() * top.length)];
-    makeMove(choice.r, choice.c);
 }
 
 window.onload = populateLeaderboard;
