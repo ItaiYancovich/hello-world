@@ -49,3 +49,15 @@ pytest -q
 ## Web front-end
 
 A small interactive web UI is available under `webapp/`. Open `webapp/index.html` in a browser to explore prime utilities. It can check primality, factor numbers, visualize prime distributions with a scatter chart, and find the n-th prime.
+
+## Chomp game
+
+A simple implementation of the two-player game **Chomp** is included under `webapp/chomp/`. It features a persistent rating system and leaderboard powered by a small Node server.
+
+Start the server from the repository root:
+
+```bash
+node webapp/chomp/server.js
+```
+
+Then open [`webapp/chomp/index.html`](webapp/chomp/index.html) in your browser. After each game the winner gains rating points and the leaderboard lists the top players.

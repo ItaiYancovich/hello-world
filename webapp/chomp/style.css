@@ -1,0 +1,29 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background: #f4f4f4;
+    text-align: center;
+}
+#board {
+    display: grid;
+    grid-template-columns: repeat(6, 40px);
+    grid-template-rows: repeat(4, 40px);
+    gap: 2px;
+    margin-bottom: 10px;
+}
+.cell {
+    width: 40px;
+    height: 40px;
+    background: #8BC34A;
+    border: 1px solid #4CAF50;
+}
+.cell.poison {
+    background: #E91E63;
+}
+.overlay {
+    background: rgba(0,0,0,0.1);
+    padding: 10px;
+    border-radius: 8px;
+}
