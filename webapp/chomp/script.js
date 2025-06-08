@@ -74,10 +74,11 @@ function updateStatus() {
     document.getElementById('status').innerText = `${players[currentPlayer]}'s turn`;
 }
 
-function endGame(winner) {
+async function endGame(winner) {
     document.getElementById('status').innerText = `${players[winner]} wins!`;
-    updateRatings(winner);
-    populateLeaderboard();
+    // wait for the server to update ratings before refreshing leaderboard
+    await updateRatings(winner);
+    await populateLeaderboard();
     document.querySelectorAll('.cell').forEach(c => c.onclick = null);
     // show login for next game
     document.getElementById('game-container').style.display = 'none';
@@ -141,7 +142,65 @@ function cellsRemainingAfterMove(r, c) {
     return count + ((r === 0 && c === 0) ? 0 : 1); // include poison unless taken
 }
 
+// ---------- Improved computer opponent ----------
+const memo = {};
+
+function boardState() {
+    const state = [];
+    for (let r = 0; r < rows; r++) {
+        let len = 0;
+        for (let c = cols - 1; c >= 0; c--) {
+            if (board[r][c]) { len = c + 1; break; }
+        }
+        state.push(len);
+    }
+    return state;
+}
+
+function canonical(state) { return state.join(','); }
+
+function isWinning(state) {
+    const key = canonical(state);
+    if (memo.hasOwnProperty(key)) return memo[key];
+    if (state[0] === 0) return memo[key] = false; // poison already taken
+
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < state[r]; c++) {
+            if (r === 0 && c === 0) continue; // losing move
+            const next = state.slice();
+            for (let i = r; i < rows; i++) {
+                next[i] = Math.min(next[i], c);
+            }
+            if (!isWinning(next)) return memo[key] = true;
+        }
+    }
+    return memo[key] = false;
+}
+
+function findWinningMove() {
+    const state = boardState();
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < state[r]; c++) {
+            if (r === 0 && c === 0) continue;
+            const next = state.slice();
+            for (let i = r; i < rows; i++) {
+                next[i] = Math.min(next[i], c);
+            }
+            if (!isWinning(next)) return { r, c };
+        }
+    }
+    return null;
+}
+
 function computerMove() {
+    // try to find a mathematically winning move first
+    const best = findWinningMove();
+    if (best) {
+        makeMove(best.r, best.c);
+        return;
+    }
+
+    // fallback: simple heuristic to stay competitive
     const moves = [];
     const total = board.flat().filter(Boolean).length;
     for (let r = 0; r < rows; r++) {
@@ -156,8 +215,8 @@ function computerMove() {
         return;
     }
     moves.sort((a, b) => a.remain - b.remain);
-    const best = moves.filter(m => m.remain === moves[0].remain);
-    const choice = best[Math.floor(Math.random() * best.length)];
+    const top = moves.filter(m => m.remain === moves[0].remain);
+    const choice = top[Math.floor(Math.random() * top.length)];
     makeMove(choice.r, choice.c);
 }
 
